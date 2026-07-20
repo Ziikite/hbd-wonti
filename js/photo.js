@@ -96,7 +96,10 @@
     cap.width = cW; cap.height = cH;
     const ctx = cap.getContext('2d');
 
+    ctx.translate(cW, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, cW, cH);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     const barH = Math.round(cH * 0.1);
     ctx.fillStyle = 'rgba(0,0,0,0.78)';
