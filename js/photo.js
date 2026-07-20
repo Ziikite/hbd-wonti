@@ -92,15 +92,17 @@
   function capturePhoto() {
     const cW = video.videoWidth  || 640;
     const cH = video.videoHeight || 480;
+
+    // 비디오를 임시 캔버스에 원본으로 먼저 캡처
+    const temp = document.createElement('canvas');
+    temp.width = cW; temp.height = cH;
+    temp.getContext('2d').drawImage(video, 0, 0, cW, cH);
+
+    // 메인 캔버스에 좌우반전해서 그리기 (음수 width = 수평 뒤집기)
     const cap = document.createElement('canvas');
     cap.width = cW; cap.height = cH;
     const ctx = cap.getContext('2d');
-
-    ctx.save();
-    ctx.translate(cW, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, cW, cH);
-    ctx.restore();
+    ctx.drawImage(temp, cW, 0, -cW, cH);
 
     const barH = Math.round(cH * 0.1);
     ctx.fillStyle = 'rgba(0,0,0,0.78)';
@@ -151,7 +153,7 @@
       setTimeout(() => setStatus(card, ''), 2000);
     } catch (e) {
       console.error('Save failed:', e);
-      setStatus(card, '⚠ 저장 실패 (로컬에만 보임)');
+      setStatus(card, `⚠ 저장 실패: ${e.code || e.message}`);
     }
   }
 
