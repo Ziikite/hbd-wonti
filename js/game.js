@@ -26,7 +26,7 @@
 
   function drawGame(revealedCandle) {
     const W = gameCanvas.offsetWidth || 700;
-    const H = 280;
+    const H = window.innerWidth < 720 ? 220 : 280;
     gameCanvas.width  = W;
     gameCanvas.height = H;
 

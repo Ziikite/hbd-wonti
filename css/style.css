@@ -77,11 +77,58 @@ body {
   text-shadow: var(--glow-sm);
 }
 
+/* ── MOBILE ── */
 @media (max-width: 720px) {
-  .site-header { flex-wrap: wrap; gap: 6px; padding: 10px 16px; }
+  /* Header */
+  .site-header { flex-wrap: wrap; gap: 6px; padding: 10px 14px; }
   .logo { font-size: 13px; }
   .site-nav { width: 100%; border-top: 1px solid var(--green-dark); padding-top: 8px; }
-  .site-nav a { margin-left: 0; margin-right: 14px; font-size: 12px; }
+  .site-nav a { margin-left: 0; margin-right: 12px; font-size: 12px; }
+
+  /* Main padding */
+  .main { padding: 18px 12px 48px; }
+  .panel { padding: 16px 14px; margin-bottom: 14px; }
+
+  /* Countdown */
+  .countdown-wrap { gap: 4px; }
+  .cd-sep { font-size: clamp(28px, 6vw, 48px); }
+
+  /* Birthday */
+  .birthday-hero { padding: 20px 8px; }
+  .birthday-price { font-size: 14px; word-break: keep-all; }
+
+  /* Buttons — minimum 48px height for touch */
+  .btn { min-height: 48px; padding: 12px 18px; font-size: 13px; }
+  .btn-lg { min-height: 52px; padding: 14px 28px; font-size: 14px; }
+
+  /* Game buttons */
+  .btn-up, .btn-down { padding: 16px 28px; font-size: 16px; min-height: 56px; width: 100%; max-width: 220px; }
+  .game-buttons { gap: 10px; }
+  #gameChart { height: 220px; }
+  .game-score { font-size: 12px; }
+
+  /* Photo area: already stacks at 600px, but tighten spacing */
+  .photo-area { gap: 14px; }
+  .photo-gallery { max-height: 400px; }
+  .polaroid-controls { flex-wrap: wrap; gap: 6px; }
+  .polaroid-controls .btn { flex: 1; min-width: 90px; justify-content: center; }
+
+  /* Letter page */
+  .call-header { padding: 16px 18px; }
+  .call-body { padding: 18px 16px; }
+  .call-section-tag { font-size: 9px; }
+  .speaker-tag { min-width: 52px; font-size: 9px; }
+  .call-p { font-size: 13px; }
+  .sign-block { flex-direction: column; align-items: flex-start; }
+
+  /* Win/lose overlay */
+  .win-content { padding: 16px; }
+  .win-title { font-size: clamp(22px, 6vw, 34px); }
+  .gift-box { font-size: 60px; }
+
+  /* Nav cards */
+  .nav-card { padding: 20px 14px; }
+  .nav-card-icon { font-size: 28px; }
 }
 
 /* MAIN */
