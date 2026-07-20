@@ -72,6 +72,22 @@
     }
   }
 
+  /* ── 이미지 압축 (Firestore 저장용) ── */
+  function compressImage(dataURL, maxWidth = 900, quality = 0.7) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const ratio   = Math.min(1, maxWidth / img.width);
+        const canvas  = document.createElement('canvas');
+        canvas.width  = Math.round(img.width  * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = dataURL;
+    });
+  }
+
   /* ── 촬영 ── */
   function capturePhoto() {
     const cW = video.videoWidth  || 640;
@@ -89,7 +105,7 @@
     ctx.font         = `bold ${Math.round(barH * 0.42)}px Courier New`;
     ctx.textBaseline = 'middle';
     const now   = new Date();
-    const label = `WONTI STOCK  |  ${now.toLocaleDateString('ko-KR')}  |  HAPPY BIRTHDAY 🎂`;
+    const label = `WONTI STOCK  |  ${now.toLocaleDateString('ko-KR')}  |  HAPPY BIRTHDAY`;
     ctx.fillText(label, Math.round(cW * 0.02), cH - barH / 2);
 
     const b = Math.round(cW * 0.04);
@@ -102,9 +118,8 @@
     });
 
     const dataURL = cap.toDataURL('image/png');
-    uploadPhoto(dataURL, now);
 
-    // 플래시 효과
+    // 플래시
     const flash = document.createElement('div');
     Object.assign(flash.style, {
       position:'fixed', inset:'0', background:'rgba(0,255,136,0.25)',
@@ -113,36 +128,30 @@
     document.body.appendChild(flash);
     setTimeout(() => { flash.style.opacity = '0'; }, 50);
     setTimeout(() => flash.remove(), 500);
+
+    savePhoto(dataURL, now);
   }
 
-  /* ── Firebase 업로드 ── */
-  async function uploadPhoto(dataURL, date) {
+  /* ── Firestore 저장 ── */
+  async function savePhoto(dataURL, date) {
     const card = addPolaroid(dataURL, date, true);
-    setStatus(card, '업로드 중... 📡');
+    setStatus(card, '저장 중... 📡');
 
     try {
-      const res  = await fetch(dataURL);
-      const blob = await res.blob();
-      const path = `photos/${Date.now()}.png`;
-      const ref  = storage.ref(path);
-
-      await ref.put(blob);
-      const url = await ref.getDownloadURL();
-
+      const compressed = await compressImage(dataURL);
       await db.collection('photos').add({
-        url,
+        data:      compressed,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-
       setStatus(card, '✓ 저장 완료');
       setTimeout(() => setStatus(card, ''), 2000);
     } catch (e) {
-      console.error('Upload failed:', e);
+      console.error('Save failed:', e);
       setStatus(card, '⚠ 저장 실패 (로컬에만 보임)');
     }
   }
 
-  /* ── Firebase에서 기존 사진 로드 ── */
+  /* ── Firestore에서 기존 사진 로드 ── */
   async function loadPhotos() {
     const placeholder = gallery.querySelector('.gallery-placeholder');
     if (placeholder) placeholder.textContent = '사진 불러오는 중... 📡';
@@ -150,103 +159,84 @@
     try {
       const snap = await db.collection('photos')
         .orderBy('createdAt', 'desc')
-        .limit(30)
+        .limit(20)
         .get();
 
       if (placeholder) placeholder.remove();
 
       if (snap.empty) {
-        showEmptyGallery();
+        showEmptyMsg();
         return;
       }
 
       snap.forEach(doc => {
-        const { url, createdAt } = doc.data();
-        addPolaroidFromURL(url, createdAt?.toDate());
+        const { data, createdAt } = doc.data();
+        addPolaroid(data, createdAt?.toDate(), false);
       });
     } catch (e) {
       console.error('Load failed:', e);
       if (placeholder) {
-        placeholder.textContent = 'Firebase 연결 실패. Firestore/Storage를 활성화해주세요.';
+        placeholder.innerHTML = 'Firebase 연결 실패.<br><small>Firestore를 활성화해주세요.</small>';
         placeholder.style.color = 'var(--red)';
       }
     }
   }
 
-  /* ── 갤러리 카드 생성 ── */
+  /* ── 갤러리 카드 ── */
   function addPolaroid(dataURL, date, prepend = false) {
     removePlaceholder();
-    const card = createCard(date);
-    const img  = document.createElement('img');
-    img.src = dataURL;
-    card.insertBefore(img, card.firstChild);
-    if (prepend) gallery.insertBefore(card, gallery.firstChild);
-    else         gallery.appendChild(card);
 
-    const dlBtn = card.querySelector('.dl-btn');
-    dlBtn.onclick = () => {
-      const a = document.createElement('a');
-      a.href = dataURL; a.download = `wonti-hbd-${Date.now()}.png`; a.click();
-    };
-    return card;
-  }
-
-  function addPolaroidFromURL(url, date) {
-    const card = createCard(date);
-    const img  = document.createElement('img');
-    img.src   = url;
-    img.onerror = () => card.remove();
-    card.insertBefore(img, card.firstChild);
-    gallery.appendChild(card);
-
-    const dlBtn = card.querySelector('.dl-btn');
-    dlBtn.onclick = () => { window.open(url, '_blank'); };
-  }
-
-  function createCard(date) {
     const card = document.createElement('div');
     card.className = 'polaroid';
 
+    const img = document.createElement('img');
+    img.src = dataURL;
+    card.appendChild(img);
+
     const lbl = document.createElement('div');
     lbl.className = 'polaroid-label';
-    lbl.textContent = `WONTI CAM  |  ${date ? date.toLocaleString('ko-KR') : new Date().toLocaleString('ko-KR')}`;
+    lbl.textContent = `WONTI CAM  |  ${date ? new Date(date).toLocaleString('ko-KR') : new Date().toLocaleString('ko-KR')}`;
+    card.appendChild(lbl);
 
     const status = document.createElement('div');
-    status.className = 'polaroid-status';
-    status.style.cssText = 'font-size:10px;color:var(--green-dim);text-align:center;min-height:14px;margin-top:4px;';
+    status.style.cssText = 'font-size:10px;color:var(--green-dim);text-align:center;min-height:14px;margin-top:3px;';
+    card.appendChild(status);
 
     const controls = document.createElement('div');
     controls.className = 'polaroid-controls';
     const dlBtn = document.createElement('button');
-    dlBtn.className = 'btn btn-green dl-btn';
+    dlBtn.className   = 'btn btn-green';
     dlBtn.style.cssText = 'font-size:11px;padding:5px 12px;';
     dlBtn.textContent = '⬇ 다운로드';
+    dlBtn.onclick = () => {
+      const a = document.createElement('a');
+      a.href = dataURL; a.download = `wonti-hbd-${Date.now()}.jpg`; a.click();
+    };
     controls.appendChild(dlBtn);
-
-    card.appendChild(lbl);
-    card.appendChild(status);
     card.appendChild(controls);
+
+    card._statusEl = status;
+
+    if (prepend) gallery.insertBefore(card, gallery.firstChild);
+    else         gallery.appendChild(card);
+
     return card;
   }
 
   function setStatus(card, msg) {
-    const el = card.querySelector('.polaroid-status');
-    if (el) el.textContent = msg;
+    if (card._statusEl) card._statusEl.textContent = msg;
   }
 
   function removePlaceholder() {
-    const p = gallery.querySelector('.gallery-placeholder');
-    if (p) p.remove();
+    gallery.querySelector('.gallery-placeholder')?.remove();
   }
 
-  function showEmptyGallery() {
-    if (!gallery.querySelector('.gallery-placeholder')) {
-      const p = document.createElement('div');
-      p.className = 'gallery-placeholder';
-      p.style.cssText = 'color:var(--text-dim);font-size:12px;text-align:center;padding:44px 0;line-height:2;';
-      p.innerHTML = '아직 찍힌 사진이 없습니다.<br>왼쪽 카메라로 찍어보세요!';
-      gallery.appendChild(p);
-    }
+  function showEmptyMsg() {
+    const p = document.createElement('div');
+    p.className = 'gallery-placeholder';
+    p.style.cssText = 'color:var(--text-dim);font-size:12px;text-align:center;padding:44px 0;line-height:2;';
+    p.innerHTML = '아직 찍힌 사진이 없습니다.<br>왼쪽 카메라로 찍어보세요!';
+    gallery.appendChild(p);
   }
 
   /* ── 초기화 ── */
