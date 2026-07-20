@@ -21,7 +21,7 @@ html { scroll-behavior:smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Gothic A1', 'Courier New', Courier, monospace;
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.5;
@@ -185,7 +185,7 @@ body {
   display:inline-flex; align-items:center; justify-content:center; gap:6px;
   padding:11px 24px;
   border:1px solid; border-radius:2px;
-  font-family:'Courier New', monospace; font-size:13px;
+  font-family:'Gothic A1', 'Courier New', monospace; font-size:13px;
   letter-spacing:0.05em; cursor:pointer;
   transition:all 0.18s; text-decoration:none; background:transparent;
 }
