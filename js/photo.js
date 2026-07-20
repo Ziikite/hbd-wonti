@@ -140,20 +140,37 @@
 
   /* ── Firestore 저장 ── */
   async function savePhoto(dataURL, date) {
-    const card = addPolaroid(dataURL, date, true);
+    const card = addPolaroid(dataURL, date, null, true);
     setStatus(card, '저장 중... 📡');
 
     try {
       const compressed = await compressImage(dataURL);
-      await db.collection('photos').add({
+      const docRef = await db.collection('photos').add({
         data:      compressed,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+      card._docId = docRef.id;
       setStatus(card, '✓ 저장 완료');
       setTimeout(() => setStatus(card, ''), 2000);
     } catch (e) {
       console.error('Save failed:', e);
       setStatus(card, `⚠ 저장 실패: ${e.code || e.message}`);
+    }
+  }
+
+  /* ── Firestore 삭제 ── */
+  async function deletePhoto(card, docId) {
+    if (!confirm('이 사진을 삭제할까요?')) return;
+    try {
+      if (docId) await db.collection('photos').doc(docId).delete();
+      card.animate([{ opacity: 1 }, { opacity: 0, transform: 'scale(0.9)' }],
+        { duration: 250, fill: 'forwards' }).onfinish = () => {
+        card.remove();
+        if (!gallery.children.length) showEmptyMsg();
+      };
+    } catch (e) {
+      console.error('Delete failed:', e);
+      alert(`삭제 실패: ${e.code || e.message}`);
     }
   }
 
@@ -177,7 +194,7 @@
 
       snap.forEach(doc => {
         const { data, createdAt } = doc.data();
-        addPolaroid(data, createdAt?.toDate(), false);
+        addPolaroid(data, createdAt?.toDate(), doc.id, false);
       });
     } catch (e) {
       console.error('Load failed:', e);
@@ -189,11 +206,12 @@
   }
 
   /* ── 갤러리 카드 ── */
-  function addPolaroid(dataURL, date, prepend = false) {
+  function addPolaroid(dataURL, date, docId = null, prepend = false) {
     removePlaceholder();
 
     const card = document.createElement('div');
     card.className = 'polaroid';
+    card._docId = docId;
 
     const img = document.createElement('img');
     img.src = dataURL;
@@ -210,17 +228,26 @@
 
     const controls = document.createElement('div');
     controls.className = 'polaroid-controls';
+    controls.style.gap = '6px';
+
     const dlBtn = document.createElement('button');
-    dlBtn.className   = 'btn btn-green';
+    dlBtn.className = 'btn btn-green';
     dlBtn.style.cssText = 'font-size:11px;padding:5px 12px;';
     dlBtn.textContent = '⬇ 다운로드';
     dlBtn.onclick = () => {
       const a = document.createElement('a');
       a.href = dataURL; a.download = `wonti-hbd-${Date.now()}.jpg`; a.click();
     };
-    controls.appendChild(dlBtn);
-    card.appendChild(controls);
 
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn btn-red';
+    delBtn.style.cssText = 'font-size:11px;padding:5px 12px;';
+    delBtn.textContent = '🗑 삭제';
+    delBtn.onclick = () => deletePhoto(card, card._docId);
+
+    controls.appendChild(dlBtn);
+    controls.appendChild(delBtn);
+    card.appendChild(controls);
     card._statusEl = status;
 
     if (prepend) gallery.insertBefore(card, gallery.firstChild);
