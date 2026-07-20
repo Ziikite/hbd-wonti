@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WONTI CAM — 포토부스</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="bgChart" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;opacity:0.12;pointer-events:none;display:block;"></canvas>
+
+<div class="ticker-wrap" style="position:relative;z-index:10;">
+  <span class="ticker-content">
+    &nbsp;&nbsp;📷 WONTI CAM 시스템 가동 중 &nbsp;|&nbsp;
+    생일 기념 스냅샷 촬영 &nbsp;|&nbsp;
+    매수 포지션 진입: 추억 주식 &nbsp;|&nbsp;
+    WONTI CORP &nbsp;▲ +∞% &nbsp;|&nbsp;
+    📷 WONTI CAM 시스템 가동 중 &nbsp;|&nbsp;
+    소중한 순간을 포지션으로 잡아라 &nbsp;|&nbsp;
+  </span>
+</div>
+
+<header class="site-header" style="position:relative;z-index:10;">
+  <div class="logo">▶ WONTI CAM SYSTEM</div>
+  <nav class="site-nav">
+    <a href="index.html">[홈]</a>
+    <a href="photo.html" class="active">[포토부스]</a>
+    <a href="gift.html">[선물]</a>
+  </nav>
+</header>
+
+<main class="main" style="position:relative;z-index:1;">
+
+  <div class="panel panel-glow">
+    <div class="panel-title">[ WONTI CAM — 생일 기념 스냅샷 촬영 시스템 ]</div>
+
+    <div class="photo-area">
+
+      <!-- Webcam -->
+      <div>
+        <div class="webcam-frame">
+          <video id="webcamVideo" autoplay playsinline muted style="width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#001a00;"></video>
+          <canvas id="videoOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:block;"></canvas>
+          <div class="webcam-label">WONTI CAM v1.0</div>
+          <div class="rec-indicator">● REC</div>
+        </div>
+
+        <div id="webcamError" class="no-webcam-msg hidden">
+          카메라 접근 권한이 필요합니다.<br>
+          브라우저 주소창의 카메라 아이콘을 클릭해 허용해주세요.
+        </div>
+
+        <div class="webcam-controls mt-12">
+          <button id="captureBtn" class="btn btn-green btn-lg" disabled>
+            📸 CAPTURE / 매수
+          </button>
+        </div>
+        <p style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:8px;">
+          버튼을 눌러 생일 기념 사진을 찍어보세요!
+        </p>
+      </div>
+
+      <!-- Gallery -->
+      <div>
+        <div class="panel-title" style="margin-bottom:10px;">[ 촬영된 스냅샷 ]</div>
+        <div id="photoGallery" class="photo-gallery">
+          <div class="gallery-placeholder" style="color:var(--text-dim);font-size:12px;text-align:center;padding:44px 0;line-height:2;">
+            아직 찍힌 사진이 없습니다.<br>왼쪽 카메라로 찍어보세요!
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel text-center">
+    <a href="gift.html" class="btn btn-yellow btn-lg">다음: 선물 받으러 가기 🎁</a>
+  </div>
+
+</main>
+
+<script src="js/chart-bg.js"></script>
+<script src="js/photo.js"></script>
+</body>
+</html>

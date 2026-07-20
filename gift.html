@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WONTI MARKET — 주가 예측 챌린지</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="bgChart" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;opacity:0.12;pointer-events:none;display:block;"></canvas>
+
+<div class="ticker-wrap" style="position:relative;z-index:10;">
+  <span class="ticker-content">
+    &nbsp;&nbsp;🎁 선물 챌린지 가동 중 &nbsp;|&nbsp;
+    주가 예측 5회 성공 시 선물 획득 &nbsp;|&nbsp;
+    WONTI CORP 오늘 신고가 갱신 중 📈 &nbsp;|&nbsp;
+    FIRE족의 꿈, 오늘도 한 걸음 더 🔥 &nbsp;|&nbsp;
+    시장을 읽어라 — 선물은 승자에게 &nbsp;|&nbsp;
+    🎁 선물 챌린지 가동 중 &nbsp;|&nbsp;
+  </span>
+</div>
+
+<header class="site-header" style="position:relative;z-index:10;">
+  <div class="logo">▶ WONTI MARKET — 선물 챌린지</div>
+  <nav class="site-nav">
+    <a href="index.html">[홈]</a>
+    <a href="photo.html">[포토부스]</a>
+    <a href="gift.html" class="active">[선물]</a>
+  </nav>
+</header>
+
+<main class="main" style="position:relative;z-index:1;">
+
+  <div class="panel">
+    <div class="panel-title">[ 주가 예측 게임 — 선물 챌린지 ]</div>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px;">
+      다음 캔들이 오를지 내릴지 예측하세요!&nbsp;
+      <strong style="color:var(--green)">5회 정답</strong>을 맞추면 선물을 획득합니다.
+      (오답 허용 <strong style="color:var(--red)">2회</strong>, 총 <strong style="color:var(--text)">7회</strong> 기회)
+    </p>
+
+    <div class="game-header">
+      <div class="game-score">
+        라운드:&nbsp;<strong id="roundNum">1</strong>&nbsp;/&nbsp;7&nbsp;&nbsp;&nbsp;
+        정답:&nbsp;<strong class="score-correct" id="scoreCorrect">0</strong>&nbsp;/&nbsp;5&nbsp;&nbsp;&nbsp;
+        오답:&nbsp;<strong class="score-wrong" id="scoreWrong">0</strong>&nbsp;/&nbsp;2
+      </div>
+      <button class="btn btn-green" id="btnRestart" style="font-size:11px;padding:5px 13px;">↺ 재시작</button>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%;"></div>
+    </div>
+
+    <div class="game-chart-wrap">
+      <canvas id="gameChart"></canvas>
+      <div id="resultOverlay" class="game-result-overlay"></div>
+    </div>
+
+    <div class="game-question">다음 캔들 방향을 예측하세요</div>
+    <div class="game-buttons">
+      <button id="btnUp"   class="btn btn-up">▲ 상승 매수</button>
+      <button id="btnDown" class="btn btn-down">▼ 하락 공매도</button>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- WIN SCREEN -->
+<div id="winScreen" class="screen-overlay">
+  <div class="win-content">
+    <div class="win-title">🎉 축하해, 원태야!</div>
+    <div class="gift-box">🎁</div>
+    <div class="win-message">주가 예측 챌린지 성공!</div>
+    <div class="gift-reveal">
+      ✨ 선물이 도착했습니다 ✨<br>
+      <span style="font-size:52px;display:inline-block;margin:8px 0;animation:giftPop 0.7s 0.8s cubic-bezier(0.34,1.56,0.64,1) both;">🌸</span><br>
+      <strong style="font-size:20px;color:var(--yellow);">향수</strong><br>
+      <span style="font-size:12px;color:var(--text-dim);margin-top:6px;display:block;">서프라이즈 선물 — 직접 확인해보세요!</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:20px;">
+      오늘 WONTI 수익률: +∞% &nbsp;|&nbsp; FIRE족 달성 한 걸음 더 🔥
+    </p>
+    <button id="btnWinRestart" class="btn btn-green btn-lg">↺ 다시 하기</button>
+  </div>
+</div>
+
+<!-- LOSE SCREEN -->
+<div id="loseScreen" class="screen-overlay">
+  <div class="win-content">
+    <div class="lose-title">📉 장이 급락했습니다!</div>
+    <div class="lose-icon">😤</div>
+    <p class="lose-msg">
+      예측 실패! 하지만 괜찮아.<br>
+      FIRE족은 손절도 빠르게 하는 법이지!<br>
+      <span style="font-size:12px;">다시 도전해서 선물을 쟁취하자!</span>
+    </p>
+    <button id="btnRetry" class="btn btn-red btn-lg">↺ 다시 도전</button>
+  </div>
+</div>
+
+<script src="js/chart-bg.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WONTI STOCK EXCHANGE — HBD 🎂</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="bgChart" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;opacity:0.17;pointer-events:none;display:block;"></canvas>
+
+<div class="ticker-wrap" style="position:relative;z-index:10;">
+  <span class="ticker-content">
+    &nbsp;&nbsp;WONTI CORP (WONT) &nbsp;▲ +∞%&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    HBD 이벤트 개시 🎉&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    생일 기념 거래량 폭발 📈&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    FIRE족 달성률: 역대 최고치 갱신 🔥&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    원태 주가 신고가 돌파 ★&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    오늘이 바로 그날 — 생일 축하해, 원태야! 🎂&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    WONTI CORP (WONT) &nbsp;▲ +∞%&nbsp;&nbsp;
+  </span>
+</div>
+
+<header class="site-header" style="position:relative;z-index:10;">
+  <div class="logo">▶ WONTI STOCK EXCHANGE</div>
+  <nav class="site-nav">
+    <a href="index.html" class="active">[홈]</a>
+    <a href="photo.html">[포토부스]</a>
+    <a href="gift.html">[선물]</a>
+  </nav>
+</header>
+
+<main class="main" style="position:relative;z-index:1;">
+
+  <!-- ── BIRTHDAY MODE ── -->
+  <div id="birthdayMode" class="hidden">
+
+    <div class="panel panel-glow">
+      <div class="panel-title">[ MARKET ALERT — 긴급 공시 ]</div>
+      <div class="birthday-hero">
+        <div class="birthday-title">🎂 생일 축하해, 원태야!</div>
+        <p class="birthday-sub">오늘 WONTI 주가는 역대 최고점을 돌파했습니다 📈</p>
+        <p class="birthday-price">WONTI &nbsp;▲ +∞% &nbsp;|&nbsp; 현재가 ₩2,007.21 &nbsp;|&nbsp; 🔥 FIRE족 달성 중</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">[ WONTI CORP — 오늘의 바이탈 지수 ]</div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-label">나이</div><div class="stat-value green">+1 YOY</div></div>
+        <div class="stat"><div class="stat-label">행복 지수</div><div class="stat-value green">▲ MAX</div></div>
+        <div class="stat"><div class="stat-label">FIRE 달성률</div><div class="stat-value green">진행 중 🔥</div></div>
+        <div class="stat"><div class="stat-label">생일 모멘텀</div><div class="stat-value green">역대 최고</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">[ 생일 이벤트 ]</div>
+      <div class="nav-cards">
+        <a href="photo.html" class="nav-card">
+          <div class="nav-card-icon">📷</div>
+          <div class="nav-card-title">포토부스 입장</div>
+          <div class="nav-card-desc">생일 기념 스냅샷 촬영 시스템</div>
+        </a>
+        <a href="gift.html" class="nav-card nav-card-gift">
+          <div class="nav-card-icon">🎁</div>
+          <div class="nav-card-title">선물 받으러 가기</div>
+          <div class="nav-card-desc">주가 예측 챌린지 — 향수 선물 획득</div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── COUNTDOWN MODE ── -->
+  <div id="countdownMode" class="hidden">
+
+    <div class="panel panel-glow">
+      <div class="panel-title">[ WONTI 생일까지 남은 시간 ]</div>
+      <p class="text-center" style="color:var(--text-dim);font-size:12px;margin-bottom:18px;">
+        NEXT EVENT &nbsp;|&nbsp; 유원태 BIRTHDAY &nbsp;|&nbsp; 07월 21일
+      </p>
+      <div class="countdown-wrap">
+        <div class="cd-item"><span class="cd-value" id="cd-days">000</span><div class="cd-label">DAYS</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-item"><span class="cd-value" id="cd-hours">00</span><div class="cd-label">HRS</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-item"><span class="cd-value" id="cd-mins">00</span><div class="cd-label">MIN</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-item"><span class="cd-value" id="cd-secs">00</span><div class="cd-label">SEC</div></div>
+      </div>
+    </div>
+
+    <div class="panel text-center">
+      <p style="color:var(--text-dim);font-size:13px;">곧 생일이야, 원태야! 미리 기대하고 있어 😄</p>
+    </div>
+
+  </div>
+
+</main>
+
+<script src="js/chart-bg.js"></script>
+<script src="js/countdown.js"></script>
+</body>
+</html>
